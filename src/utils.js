@@ -208,10 +208,12 @@ function ifUndefined(val1, val2) {
  * @param {EventTarget} target
  * @param {String} types
  * @param {Function} handler
+ * @param {Boolean} useCapture
  */
-function addEventListeners(target, types, handler) {
+function addEventListeners(target, types, handler, useCapture) {
     each(splitStr(types), function(type) {
-        target.addEventListener(type, handler, false);
+        console.debug('addEventListener: useCapture: ' + useCapture);
+        target.addEventListener(type, handler, useCapture);
     });
 }
 
@@ -220,10 +222,12 @@ function addEventListeners(target, types, handler) {
  * @param {EventTarget} target
  * @param {String} types
  * @param {Function} handler
+ * @param {Boolean} useCapture
  */
-function removeEventListeners(target, types, handler) {
+function removeEventListeners(target, types, handler, useCapture) {
     each(splitStr(types), function(type) {
-        target.removeEventListener(type, handler, false);
+        console.debug('removeEventListener: useCapture: ' + useCapture);
+        target.removeEventListener(type, handler, useCapture);
     });
 }
 

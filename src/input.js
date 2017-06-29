@@ -42,6 +42,8 @@ function Input(manager, callback) {
     this.callback = callback;
     this.element = manager.element;
     this.target = manager.options.inputTarget;
+    this.useCapture = manager.options.useCapture || false;
+    this.useCaptureOnRoot = manager.options.useCaptureOnRoot || false;
 
     // smaller wrapper around the handler, for the scope and the enabled state of the manager,
     // so when disabled the input events are completely bypassed.
