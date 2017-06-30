@@ -68,6 +68,7 @@ Input.prototype = {
      * bind the events
      */
     init: function() {
+        var win;
         if (this.evEl) {
             win = this.useCapture && this.useCaptureOnRoot ? getWindowForElement(this.element) : this.element;
             addEventListeners(win, this.evEl, this.domHandler, this.useCapture);
@@ -86,6 +87,7 @@ Input.prototype = {
      * unbind the events
      */
     destroy: function() {
+        var win;
         if (this.evEl) {
             win = this.useCaptureOnRoot ? getWindowForElement(this.element) : this.element;
             removeEventListeners(win, this.evEl, this.domHandler, this.useCapture);
