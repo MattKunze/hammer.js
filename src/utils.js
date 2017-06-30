@@ -212,7 +212,6 @@ function ifUndefined(val1, val2) {
  */
 function addEventListeners(target, types, handler, useCapture) {
     each(splitStr(types), function(type) {
-        console.debug('addEventListener: useCapture: ' + useCapture);
         target.addEventListener(type, handler, useCapture);
     });
 }
@@ -226,7 +225,6 @@ function addEventListeners(target, types, handler, useCapture) {
  */
 function removeEventListeners(target, types, handler, useCapture) {
     each(splitStr(types), function(type) {
-        console.debug('removeEventListener: useCapture: ' + useCapture);
         target.removeEventListener(type, handler, useCapture);
     });
 }

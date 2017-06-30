@@ -68,54 +68,36 @@ Input.prototype = {
      * bind the events
      */
     init: function() {
-      if (this.evEl) {
-          addEventListeners(
-              this.useCapture && this.useCaptureOnRoot ? getWindowForElement(this.element) : this.element,
-              this.evEl,
-              this.domHandler,
-              this.useCapture);
-      }
-      if (this.evTarget) {
-          addEventListeners(
-              this.useCapture && this.useCaptureOnRoot ? getWindowForElement(this.target) : this.target,
-              this.evTarget,
-              this.domHandler,
-              this.useCapture);
-      }
-      if (this.evWin) {
-          addEventListeners(
-              getWindowForElement(this.element),
-              this.evWin,
-              this.domHandler,
-              this.useCapture);
-      }
+        if (this.evEl) {
+            win = this.useCapture && this.useCaptureOnRoot ? getWindowForElement(this.element) : this.element;
+            addEventListeners(win, this.evEl, this.domHandler, this.useCapture);
+        }
+        if (this.evTarget) {
+            win = this.useCapture && this.useCaptureOnRoot ? getWindowForElement(this.target) : this.target;
+            addEventListeners(win, this.evTarget, this.domHandler, this.useCapture);
+        }
+        if (this.evWin) {
+            win = getWindowForElement(this.element);
+            addEventListeners(win, this.evWin, this.domHandler, this.useCapture);
+        }
     },
 
     /**
      * unbind the events
      */
     destroy: function() {
-      if (this.evEl) {
-          removeEventListeners(
-              this.useCaptureOnRoot ? getWindowForElement(this.element) : this.element,
-              this.evEl,
-              this.domHandler,
-              this.useCapture);
-      }
-      if (this.evTarget) {
-          removeEventListeners(
-              this.useCaptureOnRoot ? getWindowForElement(this.target) : this.target,
-              this.evTarget,
-              this.domHandler,
-              this.useCapture);
-      }
-      if (this.evWin) {
-          removeEventListeners(
-              getWindowForElement(this.element),
-              this.evWin,
-              this.domHandler,
-              this.useCapture);
-      }
+        if (this.evEl) {
+            win = this.useCaptureOnRoot ? getWindowForElement(this.element) : this.element;
+            removeEventListeners(win, this.evEl, this.domHandler, this.useCapture);
+        }
+        if (this.evTarget) {
+            win = this.useCaptureOnRoot ? getWindowForElement(this.target) : this.target;
+            removeEventListeners(win, this.evTarget, this.domHandler, this.useCapture);
+        }
+        if (this.evWin) {
+            win = getWindowForElement(this.element);
+            removeEventListeners(win, this.evWin, this.domHandler, this.useCapture);
+        }
     }
 };
 
