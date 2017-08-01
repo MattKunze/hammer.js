@@ -1,7 +1,7 @@
-/*! Hammer.JS - v2.0.7 - 2016-04-22
+/*! Hammer.JS - v2.0.8 - 2017-08-01
  * http://hammerjs.github.io/
  *
- * Copyright (c) 2016 Jorik Tangelder;
+ * Copyright (c) 2017 Jorik Tangelder;
  * Licensed under the MIT license */
 (function(window, document, exportName, undefined) {
   'use strict';
@@ -216,10 +216,11 @@ function ifUndefined(val1, val2) {
  * @param {EventTarget} target
  * @param {String} types
  * @param {Function} handler
+ * @param {Boolean} useCapture
  */
-function addEventListeners(target, types, handler) {
+function addEventListeners(target, types, handler, useCapture) {
     each(splitStr(types), function(type) {
-        target.addEventListener(type, handler, false);
+        target.addEventListener(type, handler, useCapture);
     });
 }
 
@@ -228,10 +229,11 @@ function addEventListeners(target, types, handler) {
  * @param {EventTarget} target
  * @param {String} types
  * @param {Function} handler
+ * @param {Boolean} useCapture
  */
-function removeEventListeners(target, types, handler) {
+function removeEventListeners(target, types, handler, useCapture) {
     each(splitStr(types), function(type) {
-        target.removeEventListener(type, handler, false);
+        target.removeEventListener(type, handler, useCapture);
     });
 }
 
@@ -422,6 +424,8 @@ function Input(manager, callback) {
     this.callback = callback;
     this.element = manager.element;
     this.target = manager.options.inputTarget;
+    this.useCapture = manager.options.useCapture || false;
+    this.useCaptureOnRoot = manager.options.useCaptureOnRoot || false;
 
     // smaller wrapper around the handler, for the scope and the enabled state of the manager,
     // so when disabled the input events are completely bypassed.
@@ -446,18 +450,38 @@ Input.prototype = {
      * bind the events
      */
     init: function() {
-        this.evEl && addEventListeners(this.element, this.evEl, this.domHandler);
-        this.evTarget && addEventListeners(this.target, this.evTarget, this.domHandler);
-        this.evWin && addEventListeners(getWindowForElement(this.element), this.evWin, this.domHandler);
+        var win;
+        if (this.evEl) {
+            win = this.useCapture && this.useCaptureOnRoot ? getWindowForElement(this.element) : this.element;
+            addEventListeners(win, this.evEl, this.domHandler, this.useCapture);
+        }
+        if (this.evTarget) {
+            win = this.useCapture && this.useCaptureOnRoot ? getWindowForElement(this.target) : this.target;
+            addEventListeners(win, this.evTarget, this.domHandler, this.useCapture);
+        }
+        if (this.evWin) {
+            win = getWindowForElement(this.element);
+            addEventListeners(win, this.evWin, this.domHandler, this.useCapture);
+        }
     },
 
     /**
      * unbind the events
      */
     destroy: function() {
-        this.evEl && removeEventListeners(this.element, this.evEl, this.domHandler);
-        this.evTarget && removeEventListeners(this.target, this.evTarget, this.domHandler);
-        this.evWin && removeEventListeners(getWindowForElement(this.element), this.evWin, this.domHandler);
+        var win;
+        if (this.evEl) {
+            win = this.useCaptureOnRoot ? getWindowForElement(this.element) : this.element;
+            removeEventListeners(win, this.evEl, this.domHandler, this.useCapture);
+        }
+        if (this.evTarget) {
+            win = this.useCaptureOnRoot ? getWindowForElement(this.target) : this.target;
+            removeEventListeners(win, this.evTarget, this.domHandler, this.useCapture);
+        }
+        if (this.evWin) {
+            win = getWindowForElement(this.element);
+            removeEventListeners(win, this.evWin, this.domHandler, this.useCapture);
+        }
     }
 };
 
@@ -2145,7 +2169,7 @@ function Hammer(element, options) {
 /**
  * @const {string}
  */
-Hammer.VERSION = '2.0.7';
+Hammer.VERSION = '2.0.8';
 
 /**
  * default settings
@@ -2256,7 +2280,29 @@ Hammer.defaults = {
          * @default 'rgba(0,0,0,0)'
          */
         tapHighlightColor: 'rgba(0,0,0,0)'
-    }
+      },
+
+      /**
+       * set to `true` to  have Hammer.Manager's event handlers trigger during the `capture`
+       * event phase instead of the `bubble` event phase.
+       *
+       * This tends to be faster and more reliable than traditional bubbling.
+       *
+       * @type {Boolean}
+       * @default false
+       */
+      useCapture: false,
+
+      /**
+       * set to `true` to have a Hammer.Manager's event handlers attach to the window
+       * instead of the element supplied to the Manager when `useCapture` is also `true`.
+       *
+       * This also tends to be faster and more reliable than traditional bubbling.
+       *
+       * @type {Boolean}
+       * @default false
+       */
+      useCaptureOnRoot: false
 };
 
 var STOP = 1;
